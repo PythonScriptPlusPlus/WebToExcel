@@ -1,3 +1,4 @@
+from logging import exception
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 from selenium.webdriver.support import expected_conditions as EC
 from flask import Flask, send_file, render_template, request
@@ -23,16 +24,17 @@ def parser(url):
     try:
         wb = load_workbook('template.xlsx')
         ws = wb.active
+        waiting = 30
 
         # parsing stuff
 
         #name = WebDriverWait(driver, 10).until(
         #    EC.presence_of_element_located((By.CLASS_NAME, 'ui.large.header'))
         #)
-        efFoils = WebDriverWait(driver, 10).until(
+        efFoils = WebDriverWait(driver, waiting).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, 'effoIL'))
         )
-        number = WebDriverWait(driver, 10).until(
+        number = WebDriverWait(driver, waiting).until(
             EC.presence_of_element_located((By.CLASS_NAME, 'hDCZbQ'))
         )
         
@@ -41,12 +43,12 @@ def parser(url):
         #date = (efFoils[3].text).split('по')[1]
         orderer = efFoils[1].text.split('Заказчик')[1].split('\n')[1]
 
-        info = WebDriverWait(driver, 10).until(
+        info = WebDriverWait(driver, waiting).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, 'gbkFTI'))
         )
         for i in info:
             i.click()
-        itemDiv = WebDriverWait(driver, 10).until(
+        itemDiv = WebDriverWait(driver, waiting).until(
             EC.presence_of_all_elements_located((By.CLASS_NAME, 'ecxxjK'))
         )
         headers = []
@@ -209,7 +211,7 @@ def parser(url):
         driver.quit()
         return True,number 
     except:
-        print(sys.exc_info()[0])
+        print(sys.exc_info())
         driver.quit()
         return False,0
 
